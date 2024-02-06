@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
+import { Customer, Prisma } from '@prisma/client';
+
 import { PrismaService } from 'src/prisma.service';
-import { GetCustomerInput } from './dto/customer.input';
+import { GetCustomerInput, WhereCustomerUniqueInput } from './dto/customer.input';
+import { UpdateCustomerInput } from './dto/update-customer.input';
 
 @Injectable()
 export class CustomerService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
+
   async findAll(params: GetCustomerInput) {
     const { skip, take, cursor, where } = params;
 
@@ -13,6 +17,38 @@ export class CustomerService {
       take,
       cursor,
       where,
+    });
+  }
+
+  async findUnique(where: WhereCustomerUniqueInput, select: Prisma.CustomerSelect = undefined) {
+    return this.prisma.customer.findUnique({ where, select });
+  }
+
+  async delete(where: WhereCustomerUniqueInput) {
+    return this.prisma.customer.delete({
+      where
+    });
+  }
+
+  async update(data: UpdateCustomerInput, where: WhereCustomerUniqueInput) {
+    return this.prisma.customer.update({
+      where,
+      data
+    });
+  }
+
+  async activateAccount(activationCode: string): Promise<Customer | null> {
+    const customer = await this.prisma.customer.findUnique({
+      where: { activationCode }
+    });
+
+    if (!customer) {
+      return null; // Invalid activation code
+    }
+
+    return this.prisma.customer.update({
+      where: { activationCode },
+      data: { activated: true }
     });
   }
 }

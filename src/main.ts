@@ -1,5 +1,7 @@
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+
 import { AppModule } from './app.module';
 import { PrismaService } from './prisma.service';
 
@@ -11,6 +13,9 @@ async function bootstrap() {
     bufferLogs: true,
     cors: true,
   });
+
+  app.useGlobalPipes(new ValidationPipe());
+
   // app.useLogger(app.get(PinoLogger));
   const prismaService = app.get(PrismaService);
   await prismaService.enableShutdownHooks(app);
