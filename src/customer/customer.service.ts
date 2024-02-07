@@ -36,19 +36,4 @@ export class CustomerService {
       data
     });
   }
-
-  async activateAccount(activationCode: string): Promise<Customer | null> {
-    const customer = await this.prisma.customer.findUnique({
-      where: { activationCode }
-    });
-
-    if (!customer) {
-      return null; // Invalid activation code
-    }
-
-    return this.prisma.customer.update({
-      where: { activationCode },
-      data: { activated: true }
-    });
-  }
 }

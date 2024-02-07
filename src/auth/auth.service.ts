@@ -2,6 +2,7 @@ import { randomBytes } from 'node:crypto';
 
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Customer } from '@prisma/client';
 
 import sha512 from 'src/utils/sha512';
 // import { Customer } from 'src/lib/entities/customer.entity';
@@ -19,6 +20,21 @@ export class AuthService {
   ) {
   }
 
+  async activateAccount(activationCode: string): Promise<Customer | null> {
+    const customer = await this.prisma.customer.findUnique({
+      where: { activationCode }
+    });
+
+    if (!customer) {
+      return null; // Invalid activation code
+    }
+
+    return this.prisma.customer.update({
+      where: { activationCode },
+      data: { activated: true }
+    });
+  }
+
   async signIn(signInInput: SignInInput) {
     const customer = await this.prisma.customer.findFirst({
       where: {
@@ -27,7 +43,7 @@ export class AuthService {
       }
     });
 
-    if (!customer) {
+    if (!customer || !customer.activated) {
       throw new UnauthorizedException('Access Denied');
     }
 
@@ -47,11 +63,13 @@ export class AuthService {
       }
     });
 
-    const { accessToken, refreshToken } = await this.createTokens(customer);
+    return customer.activationCode;
 
-    await this.updateRefreshToken(customer.id, refreshToken);
+    // const { accessToken, refreshToken } = await this.createTokens(customer);
 
-    return { accessToken, refreshToken, customer };
+    // await this.updateRefreshToken(customer.id, refreshToken);
+
+    // return { accessToken, refreshToken, customer };
   }
 
   // private async createTokens({ id, email, role }: Customer) {

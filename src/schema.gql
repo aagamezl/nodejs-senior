@@ -11,19 +11,12 @@ type Customer {
   """Date and time when the object was updated last time."""
   updatedAt: Timestamp!
   email: String!
-  role: Role!
-  activationCode: String!
 }
 
 """
 `Date` type as integer. Type represents date and time as number of milliseconds from start of UNIX epoch.
 """
 scalar Timestamp
-
-enum Role {
-  ADMIN
-  USER
-}
 
 type NewTokensResponse {
   accessToken: String!
@@ -70,7 +63,7 @@ type Mutation {
   updateCustomer(data: UpdateCustomerInput!, where: WhereCustomerUniqueInput!): Customer!
   activateAccount(activationCode: String!): Boolean
   signIn(signInInput: SignInInput!): SignResponse!
-  signUp(signUpInput: SignUpInput!): SignResponse!
+  signUp(signUpInput: SignUpInput!): String!
   logout(id: String!): LogoutResponse!
   getNewTokens: NewTokensResponse!
 }
@@ -79,6 +72,11 @@ input UpdateCustomerInput {
   email: String
   password: String
   role: Role
+}
+
+enum Role {
+  ADMIN
+  USER
 }
 
 input SignInInput {

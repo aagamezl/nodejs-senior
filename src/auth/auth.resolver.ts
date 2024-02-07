@@ -11,10 +11,19 @@ import { SignResponse } from './dto/sign.response';
 import { SignUpInput } from './dto/signup.input';
 import { JwtPayloadRefreshToken } from './interfaces/jwt-payload-refresh-token';
 import { LogoutResponse } from './dto/logout.response';
+import { Customer } from 'src/lib/entities/customer.entity';
 
 @Resolver('Auth')
 export class AuthResolver {
   constructor(private readonly authService: AuthService) { }
+  
+  @Public()
+  @Mutation(() => Boolean, { nullable: true })
+  async activateAccount(@Args('activationCode') activationCode: string): Promise<boolean> {
+    const customer = await this.authService.activateAccount(activationCode);
+
+    return !!customer;
+  }
 
   @Public()
   @Mutation(() => SignResponse)
@@ -23,7 +32,7 @@ export class AuthResolver {
   }
 
   @Public()
-  @Mutation(() => SignResponse)
+  @Mutation(() => String)
   signUp(@Args('signUpInput') signUpInput: SignUpInput) {
     return this.authService.signUp(signUpInput);
   }

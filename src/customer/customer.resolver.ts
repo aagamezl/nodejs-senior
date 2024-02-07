@@ -45,11 +45,4 @@ export class CustomerResolver {
   ) {
     return this.customerService.update(data, where);
   }
-
-  @Mutation(() => Boolean, { nullable: true })
-  async activateAccount(@Args('activationCode') activationCode: string): Promise<boolean> {
-    const customer = await this.customerService.activateAccount(activationCode);
-
-    return !!customer;
-  }
 }
