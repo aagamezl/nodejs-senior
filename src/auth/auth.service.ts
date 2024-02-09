@@ -63,7 +63,7 @@ export class AuthService {
       }
     });
 
-    return customer.activationCode;
+    return customer;
 
     // const { accessToken, refreshToken } = await this.createTokens(customer);
 

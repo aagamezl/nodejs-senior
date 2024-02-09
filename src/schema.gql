@@ -11,6 +11,7 @@ type Customer {
   """Date and time when the object was updated last time."""
   updatedAt: Timestamp!
   email: String!
+  activationCode: String!
 }
 
 """
@@ -23,7 +24,7 @@ type NewTokensResponse {
   refreshToken: String!
 }
 
-type SignResponse {
+type SigninResponse {
   accessToken: String!
   refreshToken: String!
   customer: Customer!
@@ -62,8 +63,8 @@ type Mutation {
   deleteCustomer(where: WhereCustomerUniqueInput!): Boolean
   updateCustomer(data: UpdateCustomerInput!, where: WhereCustomerUniqueInput!): Customer!
   activateAccount(activationCode: String!): Boolean
-  signIn(signInInput: SignInInput!): SignResponse!
-  signUp(signUpInput: SignUpInput!): String!
+  signIn(signInInput: SignInInput!): SigninResponse!
+  signUp(signUpInput: SignUpInput!): Customer!
   logout(id: String!): LogoutResponse!
   getNewTokens: NewTokensResponse!
 }

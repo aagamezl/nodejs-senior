@@ -7,11 +7,12 @@ import { NewTokensResponse } from './dto/new-tokens.response';
 import { Public } from './decorators/public.decorator';
 import { RefreshTokenGuard } from './guards/refresh-token.guard';
 import { SignInInput } from './dto/signin.input';
-import { SignResponse } from './dto/sign.response';
+import { SigninResponse } from './dto/signin.response';
 import { SignUpInput } from './dto/signup.input';
 import { JwtPayloadRefreshToken } from './interfaces/jwt-payload-refresh-token';
 import { LogoutResponse } from './dto/logout.response';
 import { Customer } from 'src/lib/entities/customer.entity';
+import { SignupResponse } from './dto/signup.response';
 
 @Resolver('Auth')
 export class AuthResolver {
@@ -26,13 +27,13 @@ export class AuthResolver {
   }
 
   @Public()
-  @Mutation(() => SignResponse)
+  @Mutation(() => SigninResponse)
   signIn(@Args('signInInput') signInInput: SignInInput) {
     return this.authService.signIn(signInInput);
   }
 
   @Public()
-  @Mutation(() => String)
+  @Mutation(() => Customer)
   signUp(@Args('signUpInput') signUpInput: SignUpInput) {
     return this.authService.signUp(signUpInput);
   }
